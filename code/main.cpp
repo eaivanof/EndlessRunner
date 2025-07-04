@@ -5,9 +5,8 @@
 int main() {
     Game* game = new Game(); 
     game->init();
-    // loop будет выполняться в цикле
     game->loop();
-    //
     game->exit();
+    delete game;
     return 0;
 }
