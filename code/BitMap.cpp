@@ -34,7 +34,7 @@ void BitMap::loadBitMap(const char* filename) {
 
     // Читаем заголовок информации BMP (40 байт)
     BITMAPINFOHEADER infoHeader;
-    fread(&infoHeader, sizeof(BITMAPINFOHEADER), 1, file);
+    fread(&infoHeader, sizeof(BITMAPINFOHEADER) + 14, 1, file);
 
     // Получаем ширину и высоту изображения
     width = infoHeader.biWidth;
@@ -49,19 +49,19 @@ void BitMap::loadBitMap(const char* filename) {
 
     // Вычисляем выравнивание (padding), чтобы длина строки была кратна 4 байтам
     int padding = (4 - (width * 3) % 4) % 4;
-    BYTE rgb[3]; // Временный массив для хранения BGR-значений одного пикселя
+    BYTE rgb[4]; // Временный массив для хранения BGR-значений одного пикселя
 
     // Читаем данные построчно снизу вверх, так как BMP хранит строки в обратном порядке
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // Считываем 3 байта на пиксель: синий, зелёный, красный
-            fread(rgb, sizeof(BYTE), 3, file);
+            fread(rgb, sizeof(BYTE), 4, file);
 
             // Вычисляем индекс в буфере (с инверсией по вертикали)
             int index = (height - y - 1) * width + x;
 
             // Преобразуем BGR в DWORD формат и записываем в буфер
-            pBitMap[index] = RGBcolor(rgb[2], rgb[1], rgb[0]);
+            pBitMap[index] = RGBcolor(rgb[1], rgb[0], rgb[3], rgb[2]);
         }
         fseek(file, padding, SEEK_CUR);
     }
@@ -70,8 +70,9 @@ void BitMap::loadBitMap(const char* filename) {
 }
 
 // Преобразует компоненты R, G, B в COLORREF (DWORD) цвет
-COLORREF BitMap::RGBcolor(int r, int g, int b) {
-    return (COLORREF)(((BYTE)(b)) | ((WORD)((BYTE)(g)) << 8) | (((DWORD)(BYTE)(r) << 16)));
+COLORREF BitMap::RGBcolor(BYTE a, BYTE r, BYTE g, BYTE b)
+{
+    return (COLORREF)((b) | (((DWORD)(g)) << 8) | (((DWORD)(r)) << 16) | (((DWORD)(a)) << 24));
 }
 
 DWORD* BitMap::getBuffer() const { // Возвращает указатель на буфер пикселей

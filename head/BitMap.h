@@ -17,5 +17,5 @@ protected:
     int height = 0;
     int size = 0;
 
-    COLORREF RGBcolor(int r, int g, int b);
+    COLORREF RGBcolor(BYTE a, BYTE r, BYTE g, BYTE b);
 };

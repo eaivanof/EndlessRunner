@@ -16,6 +16,7 @@ void Game::init() {
     car = new XyBitMap;
     car->loadBitMap("img\\car.bmp");
     car->x = 0;
+    car->y = 400;
 }
 
 void Game::loop() {
