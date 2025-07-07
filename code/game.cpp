@@ -46,7 +46,7 @@ void Game::drawXyBitMap(XyBitMap *bmp) {
             int screenX = bmp->x + x;
             int screenY = bmp->y + y;
             if (screenX < SCREEN_WIDTH && screenY < SCREEN_HEIGHT) {
-                if ((BYTE)(((DWORD_PTR)((img[y * w + x]) >> 24)) & 0xff) == 0) {
+                if ((BYTE)(((DWORD_PTR)((img[y * w + x]) >> 24)) & 0xff) != 0) {
                     pScreenMem[screenY * SCREEN_WIDTH + screenX] = img[y * w + x];
                 }
             }
