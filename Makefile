@@ -7,7 +7,10 @@ gameh=./head/game.h
 BitMap=./code/BitMap.cpp
 BitMapo=./obj/BitMap.o
 BitMaph=./head/BitMap.h
-Objects=$(maino) $(gameo) $(BitMapo) 
+XyBitMap=./code/xyBitMap.cpp
+XyBitMapo=./obj/xyBitMap.o
+XyBitMaph=./head/xyBitMap.h
+Objects=$(maino) $(gameo) $(BitMapo) $(XyBitMapo) 
 
 EndlessRunner.exe: $(Objects)
 	g++ -mwindows -DUNICODE $(Objects) -o EndlessRunner
@@ -16,7 +19,9 @@ $(maino): $(main) $(gameh)
 $(gameo): $(game) $(gameh)
 	g++ $(CF) $(game) -o $(gameo)
 $(BitMapo): $(BitMap) $(BitMaph)
-	g++ $(CF) $(BitMap) -o $(BitMapo)	
+	g++ $(CF) $(BitMap) -o $(BitMapo)
+$(XyBitMapo): $(XyBitMap) $(XyBitMaph)
+	g++ $(CF) $(XyBitMap) -o $(XyBitMapo)		
 init:
 	mkdir obj
 clean: 

@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include "..\head\BitMap.h"
+#include "..\head\xyBitMap.h"
 
 class Game {
 public:
@@ -14,8 +15,8 @@ public:
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
     const int SCREEN_SIZE = SCREEN_WIDTH * SCREEN_HEIGHT;
-    /*
+    
 private:
-    void drawBufferToScreen(); // Отрисовка данных из экранного буфера на реальное окно.
-    */
+    void drawXyBitMap(XyBitMap *XYimg);
+    XyBitMap* car = nullptr;
 };
