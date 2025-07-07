@@ -20,6 +20,7 @@ void Game::init() {
 
 void Game::loop() {
     //MessageBoxA(nullptr, "The image has been loaded and drawn to the buffer", "Game Loop", MB_OK);
+    memset(pScreenMem, 0, sizeof(DWORD) * SCREEN_SIZE);
     car->x += 1;
     drawXyBitMap(car);
 }
