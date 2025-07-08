@@ -63,7 +63,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow) {
     ZeroMemory(&msg, sizeof(MSG));
     while (msg.message != WM_QUIT) {  
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-            TranslateMessage(&msg);  ）
+            TranslateMessage(&msg);
             DispatchMessage(&msg);  
         } else {
             
@@ -86,7 +86,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow) {
     return (int)msg.wParam;
 }
 
-ESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     if (msg == WM_DESTROY) {
         PostQuitMessage(0); 
         return 0;
