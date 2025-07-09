@@ -2,20 +2,30 @@
 #include <Windows.h>
 #include <string>
 
-class BitMap {
+class BitMap
+{
 public:
     BitMap();
     ~BitMap();
-    void loadBitMap(const char* filename);
-    DWORD* getBuffer() const;
-    int getWidth() const;
-    int getHeight() const;
+
+    void loadBitMap(const char *filename);
+    void drawXyBitMap(HDC hdc, int x, int y);
+    void setDimensions(int w, int h);
+    void allocateBuffer();
+
+    DWORD *getBuffer() const { return pBitMap; }
+    int getSize() const { return size; }
+    int getWidth() const { return width; }
+    int getHeight() const { return height; }
 
 protected:
-    DWORD* pBitMap = nullptr;
-    int width = 0;
-    int height = 0;
-    int size = 0;
+    DWORD *pBitMap;
+    int width;
+    int height;
+    int size;
 
-    COLORREF RGBcolor(int r, int g, int b);
+    inline DWORD RGBcolor(BYTE a, BYTE r, BYTE g, BYTE b)
+    {
+        return ((DWORD)a << 24) | ((DWORD)r << 16) | ((DWORD)g << 8) | b;
+    }
 };
