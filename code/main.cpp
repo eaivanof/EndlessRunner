@@ -1,49 +1,79 @@
 #define WIN32_LEAN_AND_MEAN
 #include "..\head\Game.h"
 
+/*
 struct StateInfo {
     bool* ticker{ nullptr };
     Game* pGame{ nullptr };
 };
+*/
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow) {
-    bool ticker = false;
-    bool framer = true;
-    Game* game = new Game();
+    Game game;
 
+    // создание окна
     WNDCLASS wc;
     ZeroMemory(&wc, sizeof(WNDCLASS));
     wc.lpfnWndProc = WndProc;
     wc.hInstance = hInst;
     wc.lpszClassName = L"myWindowClass";
-    RegisterClass(&wc);
 
-    StateInfo* pState = new StateInfo;
-    pState->ticker = &ticker;
-    pState->pGame = game;
+    RegisterClass(&wc);
 
     HWND hwnd = CreateWindow(
         wc.lpszClassName,
         L"EndlessRunner",
-        WS_SYSMENU,
-        0, 0,
-        game->SCREEN_WIDTH,
-        game->SCREEN_HEIGHT,
+        WS_POPUP,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        game.SCREEN_WIDTH, game.SCREEN_HEIGHT,
         nullptr,
         nullptr,
         hInst,
-        pState);
+        &game);
 
-    RECT rect;
-    GetClientRect(hwnd, &rect);
-    int border_width = game->SCREEN_WIDTH - (rect.right - rect.left);
-    int border_height = game->SCREEN_HEIGHT - (rect.bottom - rect.top);
-    SetWindowPos(hwnd, NULL, 0, 0,
-        game->SCREEN_WIDTH + border_width,
-        game->SCREEN_HEIGHT + border_height,
-        0);
+    if (hwnd == NULL)
+    {
+        MessageBox(hwnd, L"Окно не создано", L"Ошибка", MB_OK);
+        return 1;
+    }
+
+    // проверка поддержки монитором необходимого режима
+    bool monitor = false;
+    DEVMODE dm = {};
+    int i{};
+    while (EnumDisplaySettings(NULL, i, &dm))
+    {
+        dm.dmPelsWidth;
+        dm.dmPelsHeight;
+        dm.dmBitsPerPel;
+        i++;
+        if (dm.dmPelsWidth == game.SCREEN_WIDTH && dm.dmPelsHeight == game.SCREEN_HEIGHT && dm.dmBitsPerPel == 32)
+        {
+            monitor = true;
+        }
+    }
+    if (!monitor)
+    {
+        MessageBox(hwnd, L"Экран не поддерживает необходимый режим", L"Ошибка", MB_OK);
+        return 1;
+    }
+
+    // переходим в полноэкранный режим
+    ZeroMemory(&dm, sizeof(dm));
+    dm.dmSize = sizeof(dm);
+    dm.dmPelsWidth = game.SCREEN_WIDTH;
+    dm.dmPelsHeight = game.SCREEN_HEIGHT;
+    dm.dmBitsPerPel = 32;
+    dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
+
+    LONG result = ChangeDisplaySettings(&dm, 0);
+    if (result != DISP_CHANGE_SUCCESSFUL)
+    {
+        MessageBox(hwnd, L"Параметры экрана не были изменены", L"Ошибка", MB_OK);
+        return 1;
+    }
     ShowWindow(hwnd, nCmdShow);
 
     MSG msg;
@@ -55,21 +85,18 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow) {
         }
         else {
 
-            if (framer) {
-                game->loop();
-                framer = false;
+            if (game.framer) {
+                game.loop();
+                game.framer = false;
             }
 
-            if (ticker) {
+            if (game.ticker) {
                 RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
-                ticker = false;
-                framer = true;
+                game.ticker = false;
+                game.framer = true;
             }
         }
     }
-
-    delete game;
-    delete pState;
     return (int)msg.wParam;
 }
 
@@ -79,41 +106,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         return 0;
     }
 
-    StateInfo* pState = reinterpret_cast<StateInfo*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+    Game *pGame = reinterpret_cast<Game *>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
-    if (msg == WM_CREATE) {
-        CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-        pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
-        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pState);
-        SetTimer(hWnd, 1000, 1000 / 60, NULL);
+    if (msg == WM_CREATE)
+    {
+        CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT *>(lParam);
+        pGame = reinterpret_cast<Game *>(pCreate->lpCreateParams);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pGame);
+        SetTimer(hWnd, 1000, 1000 / pGame->fps, NULL);
         return 0;
     }
-    if (pState == nullptr) return DefWindowProc(hWnd, msg, wParam, lParam);
+    if (pGame == nullptr)
+        return DefWindowProc(hWnd, msg, wParam, lParam);
 
-    if (msg == WM_KEYDOWN) {
-        pState->pGame->keyB->keyDown((unsigned int)wParam);
+    if (msg == WM_KEYDOWN)
+    {
+        pGame->keyB->keyDown((unsigned int)wParam);
         return 0;
     }
-    if (msg == WM_KEYUP) {
-        pState->pGame->keyB->keyUp((unsigned int)wParam);
-        return 0;
-    }
-
-    if (msg == WM_TIMER) {
-        *(pState->ticker) = true;
+    if (msg == WM_KEYUP)
+    {
+        pGame->keyB->keyUp((unsigned int)wParam);
         return 0;
     }
 
-    if (msg == WM_PAINT) {
+    if (msg == WM_TIMER)
+    {
+        pGame->ticker = true;
+        return 0;
+    }
+
+    if (msg == WM_PAINT)
+    {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
         HDC hMemDC = CreateCompatibleDC(hdc);
-        HBITMAP screen = CreateCompatibleBitmap(hdc, pState->pGame->SCREEN_WIDTH, pState->pGame->SCREEN_HEIGHT);
+        HBITMAP screen = CreateCompatibleBitmap(hdc, pGame->SCREEN_WIDTH, pGame->SCREEN_HEIGHT);
         SelectObject(hMemDC, screen);
 
-        SetBitmapBits(screen, pState->pGame->SCREEN_SIZE * 4, pState->pGame->pScreenMem);
-        BitBlt(hdc, 0, 0, pState->pGame->SCREEN_WIDTH, pState->pGame->SCREEN_HEIGHT, hMemDC, 0, 0, SRCCOPY);
+        SetBitmapBits(screen, pGame->SCREEN_SIZE * sizeof(DWORD), pGame->pScreenMem);
+        BitBlt(hdc, 0, 0, pGame->SCREEN_WIDTH, pGame->SCREEN_HEIGHT, hMemDC, 0, 0, SRCCOPY);
 
         DeleteObject((HGDIOBJ)(HBITMAP)screen);
         DeleteDC(hMemDC);
