@@ -12,6 +12,10 @@ public:
     ~Game();
     void loop();
 
+    bool ticker{false};
+    bool framer{true};
+    unsigned fps{30u};
+
     DWORD *pScreenMem = nullptr;
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
