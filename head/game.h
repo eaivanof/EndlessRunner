@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <vector>
 #include <string>
+#include <mmsystem.h>  // Добавлена система mmsystem.h файл заголовка 
+#pragma comment(lib, "winmm.lib")  // Ссылка на библиотеку winmm.lib 
 
 class Game
 {
@@ -57,4 +59,7 @@ private:
 
     void moveObstacles();
     bool checkCollision(XyBitMap *car, XyBitMap *obstacle);
+
+    void playCollisionSound();  // Функция воспроизведения звуковых эффектов
+    std::string collisionSoundPath;  // Путь к звуковому файлу
 };
