@@ -17,7 +17,7 @@ KeyBh=./head/KeyB.h
 Objects=$(maino) $(gameo) $(BitMapo) $(KeyBo) $(XyBitMapo) 
 
 EndlessRunner.exe: $(Objects)
-	g++ -mwindows -DUNICODE $(Objects) -o EndlessRunner
+	g++ -mwindows -DUNICODE $(Objects) -o EndlessRunner -lwinmm
 $(maino): $(main) $(gameh) 
 	g++ $(CF) $(main) -o $(maino)
 $(gameo): $(game) $(gameh)
