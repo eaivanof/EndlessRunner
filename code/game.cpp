@@ -25,6 +25,9 @@ Game::Game()
     car->loadBitMap("img\\car.bmp");
     car->x = 100;
     car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
+
+    collisionSoundPath = "sound\\collision.wav";  // Инициализировать путь к файлу звукового эффекта
+
 }
 
 Game::~Game()
@@ -230,6 +233,7 @@ void Game::logic()
     {
         if (checkCollision(car, obstacle))
         {
+            playCollisionSound();  // Воспроизведение звуковых эффектов при столкновении
             stage = 4;
             return;
         }
@@ -368,4 +372,10 @@ bool Game::checkCollision(XyBitMap *car, XyBitMap *obstacle)
            car->x + carW > obstacle->x &&
            car->y < obstacle->y + obsH &&
            car->y + carH > obstacle->y;
+}
+
+// Функция воспроизведения звуковых эффектов столкновения
+void Game::playCollisionSound()
+{
+    PlaySoundA(collisionSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
 }
