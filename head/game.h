@@ -25,8 +25,10 @@ public:
 
     KeyB *keyB = nullptr;
 
-private:
+    int score = 0;
     int stage = 0; // start with menu
+private:
+    
     int mItem = 0;
 
     void menu();
@@ -55,7 +57,7 @@ private:
     const int OBSTACLE_SPAWN_RATE = 85;
 
     bool gameOver = false;
-    int score = 0;
+
 
     void moveObstacles();
     bool checkCollision(XyBitMap *car, XyBitMap *obstacle);
