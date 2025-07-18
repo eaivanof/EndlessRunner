@@ -49,10 +49,10 @@ private:
 
     void generateObstacle();
     std::vector<XyBitMap *> obstacles;
-    const int OBSTACLE_WIDTH = 60;
-    const int OBSTACLE_HEIGHT = 40;
+    const int OBSTACLE_WIDTH = 90;
+    const int OBSTACLE_HEIGHT = 60;
     int obstacleTimer = 0;
-    const int OBSTACLE_SPAWN_RATE = 60;
+    const int OBSTACLE_SPAWN_RATE = 85;
 
     bool gameOver = false;
     int score = 0;

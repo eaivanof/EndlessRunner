@@ -75,6 +75,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow) {
         return 1;
     }
     ShowWindow(hwnd, nCmdShow);
+    ShowCursor(false);
 
     MSG msg;
     ZeroMemory(&msg, sizeof(MSG));

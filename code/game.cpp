@@ -294,14 +294,15 @@ void Game::generateObstacle()
 
     obstacle->setDimensions(OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
     obstacle->allocateBuffer();
-
+    /*
     // Заполнение цвета препятствия (красный)
     DWORD *buffer = obstacle->getBuffer();
     for (int i = 0; i < obstacle->getSize(); i++)
     {
         buffer[i] = 0xFFFF0000;
     }
-
+    */
+    obstacle->loadBitMap("img\\heap.bmp");
     obstacles.push_back(obstacle);
 }
 
