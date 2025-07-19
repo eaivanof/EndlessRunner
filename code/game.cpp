@@ -3,6 +3,18 @@
 #include <ctime>   // time()
 #include <cstring> // memset() функций работы с памятью
 
+int selectCarSkin() {
+    const auto& skins = CarSkin::getAllSkins();
+    int choice = 0;
+    std::cout << "skin:" << std::endl;
+    for (size_t i = 0; i < skins.size(); ++i) {
+        std::cout << i + 1 << ". " << skins[i].getName() << std::endl;
+    }
+    std::cin >> choice;
+    if (choice < 1 || choice > skins.size()) choice = 1;
+    return choice - 1;
+}
+
 Game::Game()
 {
     pScreenMem = new DWORD[SCREEN_SIZE];
@@ -21,8 +33,12 @@ Game::Game()
     escMap = new XyBitMap();
     escMap->loadBitMap("img\\esc.bmp");
 
+    //choose car skin
+    selectedSkinIndex = selectCarSkin();
+    std::string carImagePath = CarSkin::getAllSkins()[selectedSkinIndex].getImagePath();
+
     car = new XyBitMap;
-    car->loadBitMap("img\\car.bmp");
+    car->loadBitMap(carImagePath.c_str());
     car->x = 100;
     car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
 
@@ -132,45 +148,51 @@ void Game::loop()
         gameover();
         return;
     }
+    if (stage == 5)
+    { // 
+        drawCarSelectionMenu();
+        handleCarSelectionInput();
+        return;
+    }
 }
 
-void Game::menu()
-{
-    if (keyB->isKeyDown(VK_DOWN))
-    {
-        if (mItem < 1)
-        {
-            ++mItem;
-            menuItemMap->x = 425;
-            menuItemMap->y = 502;
-        }
-        return;
-    }
-    if (keyB->isKeyDown(VK_UP))
-    {
-        if (mItem > 0)
-        {
-            --mItem;
-            menuItemMap->x = 425;
-            menuItemMap->y = 338;
-        }
-        return;
-    }
-    if (keyB->isKeyDown(VK_RETURN))
-    {
-        if (mItem < 1)
-        {
-            stage = 1;
-        }
-        else
-        {
-            PostQuitMessage(0);
-        }
-        return;
-    }
+
+void Game::menu() {
     drawXyBitMap(menuMap);
     drawXyBitMap(menuItemMap);
+    
+    if (keyB->isKeyDown(VK_DOWN)) {
+        keyB->keyUp(VK_DOWN);
+        if (mItem < 2) {  
+            mItem++;
+            if (mItem == 1) menuItemMap->y = 420;  
+            else if (mItem == 2) menuItemMap->y = 500;  
+        }
+        return;
+    }
+    if (keyB->isKeyDown(VK_UP)) {
+        keyB->keyUp(VK_UP);
+        if (mItem > 0) {
+            mItem--;
+            if (mItem == 0) menuItemMap->y = 340;  
+            else if (mItem == 1) menuItemMap->y = 420;  
+        }
+        return;
+    }
+
+    if (keyB->isKeyDown(VK_RETURN)) {
+        keyB->keyUp(VK_RETURN);
+        if (mItem == 0) {
+            stage = 1;  
+        } else if (mItem == 1) {
+            stage = 5; 
+        } else if (mItem == 2) {
+            PostQuitMessage(0); 
+        }
+        return;
+    }
 }
+
 void Game::logic()
 {
     // Отрисовка фона и разделительных линий горизонтальных дорожек
@@ -379,4 +401,60 @@ bool Game::checkCollision(XyBitMap *car, XyBitMap *obstacle)
 void Game::playCollisionSound()
 {
     PlaySoundA(collisionSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
+}
+
+void Game::handleCarSelectionInput() {
+    const auto& skins = CarSkin::getAllSkins();
+    if (keyB->isKeyDown(VK_UP)) {
+        keyB->keyUp(VK_UP);
+        if (carSelectIndex > 0) carSelectIndex--;
+    }
+    if (keyB->isKeyDown(VK_DOWN)) {
+        keyB->keyUp(VK_DOWN);
+        if (carSelectIndex < skins.size() - 1) carSelectIndex++;
+    }
+    if (keyB->isKeyDown(VK_RETURN)) {
+        keyB->keyUp(VK_RETURN);
+        std::string carPath = skins[carSelectIndex].getImagePath();
+        car->loadBitMap(carPath.c_str());
+        stage = 0;
+    }
+    if (keyB->isKeyDown(VK_ESCAPE)) {
+        keyB->keyUp(VK_ESCAPE);
+        stage = 0;
+    }
+}
+
+void Game::drawCarSelectionMenu() {
+    for (int i = 0; i < SCREEN_SIZE; i++) {
+        pScreenMem[i] = RGB(128, 128, 128);
+    }
+    
+    const auto& skins = CarSkin::getAllSkins();
+    for (size_t i = 0; i < skins.size(); i++) {
+        XyBitMap tempCar;
+        tempCar.loadBitMap(skins[i].getImagePath().c_str());
+        tempCar.x = SCREEN_WIDTH / 2 - tempCar.getWidth() / 2;
+        tempCar.y = 200 + i * 150;
+        drawXyBitMap(&tempCar);
+        
+        if (i == carSelectIndex) {
+            int x = tempCar.x - 5;
+            int y = tempCar.y - 5;
+            int w = tempCar.getWidth() + 10;
+            int h = tempCar.getHeight() + 10;
+            for (int px = x; px < x + w; px++) {
+                if (px >=0 && px < SCREEN_WIDTH) {
+                    pScreenMem[y * SCREEN_WIDTH + px] = RGB(255, 0, 0); //
+                    pScreenMem[(y + h) * SCREEN_WIDTH + px] = RGB(255, 0, 0); // 
+                }
+            }
+            for (int py = y; py < y + h; py++) {
+                if (py >=0 && py < SCREEN_HEIGHT) {
+                    pScreenMem[py * SCREEN_WIDTH + x] = RGB(255, 0, 0); // 
+                    pScreenMem[py * SCREEN_WIDTH + (x + w)] = RGB(255, 0, 0); // 
+                }
+            }
+        }
+    }
 }
