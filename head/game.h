@@ -6,6 +6,8 @@
 #include <string>
 #include <mmsystem.h>  // Добавлена система mmsystem.h файл заголовка 
 #pragma comment(lib, "winmm.lib")  // Ссылка на библиотеку winmm.lib 
+#include "CarSkin.h" 
+#include <iostream>
 
 class Game
 {
@@ -30,11 +32,15 @@ public:
 private:
     
     int mItem = 0;
+    int carSelectIndex = 0; //
 
     void menu();
     void logic();
     void exit();
     void gameover();
+
+    void drawCarSelectionMenu(); // 
+    void handleCarSelectionInput(); //
 
     XyBitMap *menuMap = nullptr;
     XyBitMap *menuItemMap = nullptr;
@@ -64,4 +70,6 @@ private:
 
     void playCollisionSound();  // Функция воспроизведения звуковых эффектов
     std::string collisionSoundPath;  // Путь к звуковому файлу
+
+    int selectedSkinIndex;
 };
