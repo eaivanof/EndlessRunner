@@ -25,7 +25,7 @@ Game::Game()
     menuItemMap = new XyBitMap();
     menuItemMap->loadBitMap("img\\menuItem.bmp");
     menuItemMap->x = 425;
-    menuItemMap->y = 338;
+    menuItemMap->y = 270;
     backMap = new XyBitMap();
     backMap->loadBitMap("img\\back.bmp");
     pauseMap = new XyBitMap();
@@ -165,8 +165,8 @@ void Game::menu() {
         keyB->keyUp(VK_DOWN);
         if (mItem < 2) {  
             mItem++;
-            if (mItem == 1) menuItemMap->y = 420;  
-            else if (mItem == 2) menuItemMap->y = 500;  
+            if (mItem == 1) menuItemMap->y = 400;  
+            else if (mItem == 2) menuItemMap->y = 534;  
         }
         return;
     }
@@ -174,8 +174,8 @@ void Game::menu() {
         keyB->keyUp(VK_UP);
         if (mItem > 0) {
             mItem--;
-            if (mItem == 0) menuItemMap->y = 340;  
-            else if (mItem == 1) menuItemMap->y = 420;  
+            if (mItem == 0) menuItemMap->y = 270;  
+            else if (mItem == 1) menuItemMap->y = 400;  
         }
         return;
     }
@@ -271,31 +271,41 @@ void Game::exit()
 {
     if (keyB->isKeyDown(VK_DOWN))
     {
-        if (mItem < 1)
+        keyB->keyUp(VK_DOWN);
+        if (mItem < 2)
         {
-            ++mItem;
-            menuItemMap->x = 425;
-            menuItemMap->y = 502;
+            mItem++;
+            if (mItem == 1)
+                menuItemMap->y = 400;
+            else if (mItem == 2)
+                menuItemMap->y = 534;
         }
         return;
     }
     if (keyB->isKeyDown(VK_UP))
     {
+        keyB->keyUp(VK_UP);
         if (mItem > 0)
         {
-            --mItem;
-            menuItemMap->x = 425;
-            menuItemMap->y = 338;
+            mItem--;
+            if (mItem == 0)
+                menuItemMap->y = 270;
+            else if (mItem == 1)
+                menuItemMap->y = 400;
         }
         return;
     }
     if (keyB->isKeyDown(VK_RETURN))
     {
-        if (mItem < 1)
+        if (mItem == 0)
         {
             stage = 1;
         }
-        else
+        else if (mItem == 1)
+        {
+            // магазин
+        }
+        else if (mItem == 2)
         {
             PostQuitMessage(0);
         }
