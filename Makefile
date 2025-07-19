@@ -13,8 +13,11 @@ XyBitMaph=./head/XyBitMap.h
 KeyB=./code/KeyB.cpp
 KeyBo=./obj/KeyB.o
 KeyBh=./head/KeyB.h
+CARSKIN_SRC = ./code/CarSkin.cpp
+CARSKIN_OBJ = ./obj/CarSkin.o
+CARSKIN_HDR = ./head/CarSkin.h
 
-Objects=$(maino) $(gameo) $(BitMapo) $(KeyBo) $(XyBitMapo) 
+Objects=$(maino) $(gameo) $(BitMapo) $(KeyBo) $(XyBitMapo) $(CARSKIN_OBJ)
 
 EndlessRunner.exe: $(Objects)
 	g++ -mwindows -DUNICODE $(Objects) -o EndlessRunner -lwinmm
@@ -28,6 +31,8 @@ $(KeyBo): $(KeyB) $(KeyBh)
 	g++ $(CF) $(KeyB) -o $(KeyBo)	
 $(XyBitMapo): $(XyBitMap) $(XyBitMaph)
 	g++ $(CF) $(XyBitMap) -o $(XyBitMapo)	
+$(CARSKIN_OBJ): $(CARSKIN_SRC) $(CARSKIN_HDR)
+	g++ $(CF) $(CARSKIN_SRC) -o $(CARSKIN_OBJ)
 init:
 	mkdir obj
 clean: 
