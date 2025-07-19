@@ -150,7 +150,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         SetBitmapBits(screen, pGame->SCREEN_SIZE * sizeof(DWORD), pGame->pScreenMem);
         BitBlt(hdc, 0, 0, pGame->SCREEN_WIDTH, pGame->SCREEN_HEIGHT, hMemDC, 0, 0, SRCCOPY);
 
-        if (pGame->stage != 0) {
+        if (pGame->stage != 0 && pGame->stage != 5)
+        {
             std::wstring ss = std::to_wstring(pGame->score);
             RECT rect = {10, 10, 200, 50};
             DrawText(hdc, (L"Score: " + ss).c_str(), -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOCLIP);

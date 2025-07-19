@@ -376,7 +376,7 @@ void Game::moveObstacles()
     for (auto it = obstacles.begin(); it != obstacles.end();)
     {
         XyBitMap *obstacle = *it;
-        obstacle->x -= 5; // Движение препятствия влево (скорость 5 пикселей/кадр)
+        obstacle->x -= 7; // Движение препятствия влево (скорость 5 пикселей/кадр)
 
         drawXyBitMap(obstacle);
 

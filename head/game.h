@@ -60,7 +60,7 @@ private:
     const int OBSTACLE_WIDTH = 90;
     const int OBSTACLE_HEIGHT = 60;
     int obstacleTimer = 0;
-    const int OBSTACLE_SPAWN_RATE = 85;
+    const int OBSTACLE_SPAWN_RATE = 65;
 
     bool gameOver = false;
 
