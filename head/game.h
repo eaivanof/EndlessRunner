@@ -52,8 +52,8 @@ private:
 
     int currentLane = 1;
     const int LANE_HEIGHT = 240;
-    const int CAR_WIDTH = 80;
-    const int CAR_HEIGHT = 120;
+    //const int CAR_WIDTH = 200;
+    //const int CAR_HEIGHT = 100;
 
     void generateObstacle();
     std::vector<XyBitMap *> obstacles;

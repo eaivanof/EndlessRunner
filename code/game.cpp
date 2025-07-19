@@ -40,7 +40,7 @@ Game::Game()
     car = new XyBitMap;
     car->loadBitMap(carImagePath.c_str());
     car->x = 100;
-    car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
+    car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - car->getHeight()) / 2;
 
     collisionSoundPath = "sound\\collision.wav";  // Инициализировать путь к файлу звукового эффекта
 
@@ -111,7 +111,7 @@ void Game::loop()
             if (currentLane > 0)
             {
                 currentLane--;
-                car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
+                car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - car->getHeight()) / 2;
             }
         }
         if (keyB->isKeyDown(VK_DOWN))
@@ -120,7 +120,7 @@ void Game::loop()
             if (currentLane < 2)
             {
                 currentLane++;
-                car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
+                car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - car->getHeight()) / 2;
             }
         }
 
