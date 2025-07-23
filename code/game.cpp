@@ -43,6 +43,7 @@ Game::Game()
     car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
 
     collisionSoundPath = "sound\\collision.wav";  // Инициализировать путь к файлу звукового эффекта
+    laneChangeSoundPath = "sound\\lane_change.wav";
 
 }
 
@@ -112,6 +113,7 @@ void Game::loop()
             {
                 currentLane--;
                 car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
+                playLaneChangeSound();
             }
         }
         if (keyB->isKeyDown(VK_DOWN))
@@ -121,6 +123,7 @@ void Game::loop()
             {
                 currentLane++;
                 car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
+                playLaneChangeSound();
             }
         }
 
@@ -467,4 +470,9 @@ void Game::drawCarSelectionMenu() {
             }
         }
     }
+}
+
+void Game::playLaneChangeSound()
+{
+    PlaySoundA(laneChangeSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
 }
