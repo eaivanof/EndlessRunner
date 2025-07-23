@@ -72,4 +72,7 @@ private:
     std::string collisionSoundPath;  // Путь к звуковому файлу
 
     int selectedSkinIndex;
+
+    std::string laneChangeSoundPath;
+    void playLaneChangeSound();
 };
