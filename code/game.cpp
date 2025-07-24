@@ -1,371 +1,499 @@
 #include "..\head\game.h"
-#include <cstdlib> // rand()
-#include <ctime>   // time()
-#include <cstring> // memset() —Ñ—É–Ω–∫—Ü–∏–π —Ä–∞–±–æ—Ç—ã —Å –ø–∞–º—è—Ç—å—é
+#include <ctime>
 
-int selectCarSkin() {
-    const auto& skins = CarSkin::getAllSkins();
-    int choice = 0;
-    std::cout << "skin:" << std::endl;
-    for (size_t i = 0; i < skins.size(); ++i) {
-        std::cout << i + 1 << ". " << skins[i].getName() << std::endl;
-    }
-    std::cin >> choice;
-    if (choice < 1 || choice > skins.size()) choice = 1;
-    return choice - 1;
-}
-
-Game::Game()
-{
+Game::Game() {
+    srand(time(0));
+    // ÒÓÁ‰‡∏Ï ·ÛÙÂ ˝Í‡Ì‡ Ë Ó·‡·ÓÚ˜ËÍ ÍÎ‡‚Ë‡ÚÛ˚
     pScreenMem = new DWORD[SCREEN_SIZE];
-    memset(pScreenMem, 0, sizeof(DWORD) * SCREEN_SIZE);
     keyB = new KeyB();
+
+    // Á‡„ÛÁÍ‡ ËÁÓ·‡ÊÂÌËÈ
     menuMap = new XyBitMap();
     menuMap->loadBitMap("img\\menu.bmp");
     menuItemMap = new XyBitMap();
     menuItemMap->loadBitMap("img\\menuItem.bmp");
-    menuItemMap->x = 425;
-    menuItemMap->y = 270;
+    escMap = new XyBitMap();
+    escMap->loadBitMap("img\\esc.bmp");
     backMap = new XyBitMap();
     backMap->loadBitMap("img\\back.bmp");
     pauseMap = new XyBitMap();
     pauseMap->loadBitMap("img\\pause.bmp");
-    escMap = new XyBitMap();
-    escMap->loadBitMap("img\\esc.bmp");
+    car1 = new BitMap;
+    car1->loadBitMap("img\\car1.bmp");
+    car2 = new BitMap;
+    car2->loadBitMap("img\\car2.bmp");
+    car3 = new BitMap;
+    car3->loadBitMap("img\\car3.bmp");
+    carItemMap = new BitMap();
+    carItemMap->loadBitMap("img\\carItem.bmp");
+    redCarItemMap = new BitMap();
+    redCarItemMap->loadBitMap("img\\redcarItem.bmp");
+    sCar1 = new BitMap;
+    sCar1->loadBitMap("img\\Scar1.bmp");
+    sCar2 = new BitMap;
+    sCar2->loadBitMap("img\\Scar2.bmp");
+    sCar3 = new BitMap;
+    sCar3->loadBitMap("img\\Scar3.bmp");
+    obstacleMap = new BitMap;
+    obstacleMap->loadBitMap("img\\heap.bmp");
+    obstacleTwoMap = new BitMap;
+    obstacleTwoMap->loadBitMap("img\\heap2.bmp");
+    keysMap = new XyBitMap;
+    keysMap->loadBitMap("img\\keys.bmp");
 
-    //choose car skin
-    selectedSkinIndex = selectCarSkin();
-    std::string carImagePath = CarSkin::getAllSkins()[selectedSkinIndex].getImagePath();
+    // ËÌËˆË‡ÎËÁ‡ˆËˇ ÔÓÎÂÈ
+    menuItemMap->x = MenuItemX;
+    menuItemMap->y = MenuItemY[0];
 
-    car = new XyBitMap;
-    car->loadBitMap(carImagePath.c_str());
-    car->x = 100;
-    car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
+    car.img = car1;
+    car.x = carX;
+    car.y = carY[1];
 
-    collisionSoundPath = "sound\\collision.wav";  // –ò–Ω–∏—Ü–∏–∞–ª–∏–∑–∏—Ä–æ–≤–∞—Ç—å –ø—É—Ç—å –∫ —Ñ–∞–π–ª—É –∑–≤—É–∫–æ–≤–æ–≥–æ —ç—Ñ—Ñ–µ–∫—Ç–∞
+    carSelector.img = carItemMap;
+    carSelector.x = carSelectorX[0];
+    carSelector.y = carSelectorY[0];
+
+    collisionSoundPath = "sound\\collision.wav";
     laneChangeSoundPath = "sound\\lane_change.wav";
-
 }
 
-Game::~Game()
-{
-    if (pScreenMem)
-    {
+Game::~Game() {
+    if (pScreenMem) {
         delete[] pScreenMem;
         pScreenMem = nullptr;
     }
-    if (keyB)
-    {
+    if (keyB) {
         delete keyB;
         keyB = nullptr;
     }
-    if (menuMap)
-    {
+    if (menuMap) {
         delete menuMap;
         menuMap = nullptr;
     }
-    if (menuItemMap)
-    {
+    if (menuItemMap) {
         delete menuItemMap;
         menuItemMap = nullptr;
     }
-    if (backMap)
-    {
-        delete backMap;
-        backMap = nullptr;
-    }
-    if (pauseMap)
-    {
-        delete pauseMap;
-        pauseMap = nullptr;
-    }
-    if (escMap)
-    {
+    if (escMap) {
         delete escMap;
         escMap = nullptr;
     }
+    if (backMap) {
+        delete backMap;
+        backMap = nullptr;
+    }
+    if (pauseMap) {
+        delete pauseMap;
+        pauseMap = nullptr;
+    }
+    if (car1) {
+        delete car1;
+        car1 = nullptr;
+    }
+    if (car2) {
+        delete car2;
+        car2 = nullptr;
+    }
+    if (car3) {
+        delete car3;
+        car3 = nullptr;
+    }
+    if (carItemMap) {
+        delete carItemMap;
+        carItemMap = nullptr;
+    }
+    if (redCarItemMap) {
+        delete redCarItemMap;
+        redCarItemMap = nullptr;
+    }
+    if (sCar1) {
+        delete sCar1;
+        sCar1 = nullptr;
+    }
+    if (sCar2) {
+        delete sCar2;
+        sCar2 = nullptr;
+    }
+    if (sCar3) {
+        delete sCar3;
+        sCar3 = nullptr;
+    }
+    if (obstacleMap) {
+        delete obstacleMap;
+        obstacleMap = nullptr;
+    }
+    if (obstacleTwoMap) {
+        delete obstacleTwoMap;
+        obstacleTwoMap = nullptr;
+    }
+    if (keysMap) {
+        delete keysMap;
+        keysMap = nullptr;
+    }
 }
 
-void Game::loop()
-{
-    if (stage == 0)
-    { // menu
+void Game::loop() {
+    if (stage == Stages::menu) {
         menu();
         return;
     }
-    if (stage == 1)
-    { // game
-        if (keyB->isKeyDown(VK_SPACE))
-        {
-            keyB->keyUp(VK_SPACE);
-            stage = 2;
-            return;
-        }
-        if (keyB->isKeyDown(VK_ESCAPE))
-        {
-            stage = 3;
-            return;
-        }
-        if (keyB->isKeyDown(VK_UP))
-        {
-            keyB->keyUp(VK_UP);
-            if (currentLane > 0)
-            {
-                currentLane--;
-                car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
-                playLaneChangeSound();
-            }
-        }
-        if (keyB->isKeyDown(VK_DOWN))
-        {
-            keyB->keyUp(VK_DOWN);
-            if (currentLane < 2)
-            {
-                currentLane++;
-                car->y = currentLane * LANE_HEIGHT + (LANE_HEIGHT - CAR_HEIGHT) / 2;
-                playLaneChangeSound();
-            }
-        }
-
-        logic();
+    if (stage == Stages::game) {
+        go();
         return;
     }
-    if (stage == 2)
-    { // pause
-        drawXyBitMap(pauseMap);
-        if (keyB->isKeyDown(VK_SPACE))
-        {
+    if (stage == Stages::pause) {
+        drawBitMap(pauseMap);
+        if (keyB->isKeyDown(VK_SPACE)) {
             keyB->keyUp(VK_SPACE);
-            stage = 1;
-            return;
+            stage = Stages::game;
         }
         return;
     }
-    if (stage == 3)
-    { // escpause
+    if (stage == Stages::escmenu) {
         exit();
         return;
     }
-    if (stage == 4)
-    { // gameover
+    if (stage == Stages::gameover) {
         gameover();
         return;
     }
-    if (stage == 5)
-    { // 
-        drawCarSelectionMenu();
-        handleCarSelectionInput();
+    if (stage == Stages::store) {
+        store();
+        return;
+    }
+    if (stage == Stages::keys) {
+        drawBitMap(keysMap);
+        if (keyB->isKeyDown(VK_ESCAPE)) {
+            keyB->keyUp(VK_ESCAPE);
+            if (goGame) {
+                stage = Stages::escmenu;
+            }
+            else {
+                stage = Stages::menu;
+            }
+        }
         return;
     }
 }
 
-
 void Game::menu() {
-    drawXyBitMap(menuMap);
-    drawXyBitMap(menuItemMap);
-    
+    drawBitMap(menuMap);
+    drawBitMap(menuItemMap);
+
+    menuItemChange();
+
+    if (keyB->isKeyDown(VK_RETURN)) {
+        keyB->keyUp(VK_RETURN);
+        if (mItem == 0) {
+            stage = Stages::game;
+            carSelector.x = carSelectorX[0];
+            goGame = true; // ‚˚ıÓ‰ ËÁ Ï‡„‡ÁËÌ‡ ‚ escmenu
+        }
+        else if (mItem == 1) {
+            stage = Stages::store;
+        }
+        else if (mItem == 2) {
+            stage = Stages::keys;
+        }
+        else if (mItem == 3) {
+            PostQuitMessage(0);
+        }
+        return;
+    }
+}
+
+void Game::go() {
+    if (keyB->isKeyDown(VK_SPACE)) {
+        keyB->keyUp(VK_SPACE);
+        stage = Stages::pause;
+        return;
+    }
+    if (keyB->isKeyDown(VK_ESCAPE)) {
+        stage = Stages::escmenu;
+        return;
+    }
+
+    // œÂÂÏÂ˘ÂÌËˇ Ó·˙ÂÍÚÓ‚
+    carMove();
+    obstacleTimer++;
+    if (obstacleTimer >= OBSTACLE_SPAWN_RATE) {
+        generateObstacle();
+        obstacleTimer = 0;
+    }
+    moveObstacles();
+
+    // ŒÚËÒÓ‚Í‡
+    drawBitMap(backMap);
+    drawBitMap(car.img, car.x, car.y);
+    for (auto obstacle : obstacles) {
+        drawBitMap(obstacle->img, obstacle->x, obstacle->y);
+    }
+
+    // œÓ‚ÂÍË ÒÚÓÎÍÌÓ‚ÂÌËÈ
+    for (auto obstacle : obstacles) {
+        if (checkCollision(obstacle)) {
+            PlaySoundA(collisionSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
+            stage = Stages::gameover;
+            return;
+        }
+    }
+}
+
+void Game::exit() {
+    drawBitMap(escMap);
+    drawBitMap(menuItemMap);
+
+    menuItemChange();
+
+    if (keyB->isKeyDown(VK_RETURN)) {
+        keyB->keyUp(VK_RETURN);
+        if (mItem == 0) {
+            stage = Stages::game;
+        }
+        else if (mItem == 1) {
+            stage = Stages::store;
+        }
+        else if (mItem == 2) {
+            stage = Stages::keys;
+        }
+        else if (mItem == 3) {
+            PostQuitMessage(0);
+        }
+        return;
+    }
+}
+
+void Game::gameover() {
+    char scoreText[50];
+    sprintf_s(scoreText, "Game over! Score: %d", score);
+    MessageBoxA(nullptr, scoreText, "Game over", MB_OK | MB_ICONINFORMATION);
+    score = 0;
+    for (int i{}; i < 3;++i) {
+        items[i].isBuy = false;
+    }
+    obstacles.clear();
+    menuItemMap->y = MenuItemY[0];
+    currentLane = 1;
+    car.y = carY[1];
+    car.img = car1;
+    cItem = 0;
+    carSelector.x = carSelectorX[1];
+    carSelector.y = carSelectorY[0];
+    stage = Stages::menu;
+    goGame = false; // ‚˚ıÓ‰ ËÁ Ï‡„‡ÁËÌ‡ ‚ menu
+}
+
+void Game::store() {
+    if (keyB->isKeyDown(VK_ESCAPE)) {
+        keyB->keyUp(VK_ESCAPE);
+        if (goGame) {
+            stage = Stages::escmenu;
+        }
+        else {
+            stage = Stages::menu;
+        }
+        return;
+    }
+
+    drawBitMap(backMap);
+    drawBitMap(car1, carItemX[0], carY[0]);
+    drawBitMap(car2, carItemX[0], carY[1]);
+    drawBitMap(car3, carItemX[0], carY[2]);
+    drawBitMap(sCar1, carItemX[1], carY[0]);
+    drawBitMap(sCar2, carItemX[1], carY[1]);
+    drawBitMap(sCar3, carItemX[1], carY[2]);
+    drawBitMap(carSelector.img, carSelector.x, carSelector.y);
+
+    carItemChange();
+    if ((carSelector.x == carSelectorX[1]) &&
+        (!items[cItem].isBuy) &&
+        (items[cItem].price > score)) {
+        carSelector.img = redCarItemMap;
+    }
+    else {
+        carSelector.img = carItemMap;
+    }
+
+    if (keyB->isKeyDown(VK_RETURN)) {
+        keyB->keyUp(VK_RETURN);
+        if (carSelector.x == carSelectorX[0]) {
+            if (cItem == 0) {
+                car.img = car1;
+            }
+            else if (cItem == 1) {
+                car.img = car2;
+            }
+            else if (cItem == 2) {
+                car.img = car3;
+            }
+            if (goGame) {
+                stage = Stages::escmenu;
+            }
+            else {
+                stage = Stages::menu;
+            }
+        }
+        else {
+            if (items[cItem].isBuy) {
+                if (cItem == 0) {
+                    car.img = sCar1;
+                }
+                else if (cItem == 1) {
+                    car.img = sCar2;
+                }
+                else if (cItem == 2) {
+                    car.img = sCar3;
+                }
+                if (goGame) {
+                    stage = Stages::escmenu;
+                }
+                else {
+                    stage = Stages::menu;
+                }
+            }
+            else if (items[cItem].price <= score) {
+                if (cItem == 0) {
+                    score -= items[0].price;
+                    items[0].isBuy = true;
+                }
+                else if (cItem == 1) {
+                    score -= items[1].price;
+                    items[1].isBuy = true;
+                }
+                else if (cItem == 2) {
+                    score -= items[2].price;
+                    items[2].isBuy = true;
+                }
+            }
+        }
+        return;
+    }
+}
+
+// ‚˚·Ó ÔÛÌÍÚ‡ ÏÂÌ˛
+void Game::menuItemChange() {
     if (keyB->isKeyDown(VK_DOWN)) {
         keyB->keyUp(VK_DOWN);
-        if (mItem < 2) {  
-            mItem++;
-            if (mItem == 1) menuItemMap->y = 400;  
-            else if (mItem == 2) menuItemMap->y = 534;  
+        if (mItem < 3) {
+            menuItemMap->y = MenuItemY[++mItem];
         }
         return;
     }
     if (keyB->isKeyDown(VK_UP)) {
         keyB->keyUp(VK_UP);
         if (mItem > 0) {
-            mItem--;
-            if (mItem == 0) menuItemMap->y = 270;  
-            else if (mItem == 1) menuItemMap->y = 400;  
-        }
-        return;
-    }
-
-    if (keyB->isKeyDown(VK_RETURN)) {
-        keyB->keyUp(VK_RETURN);
-        if (mItem == 0) {
-            stage = 1;  
-        } else if (mItem == 1) {
-            stage = 5; 
-        } else if (mItem == 2) {
-            PostQuitMessage(0); 
+            menuItemMap->y = MenuItemY[--mItem];
         }
         return;
     }
 }
 
-void Game::logic()
-{
-    // –û—Ç—Ä–∏—Å–æ–≤–∫–∞ —Ñ–æ–Ω–∞ –∏ —Ä–∞–∑–¥–µ–ª–∏—Ç–µ–ª—å–Ω—ã—Ö –ª–∏–Ω–∏–π –≥–æ—Ä–∏–∑–æ–Ω—Ç–∞–ª—å–Ω—ã—Ö –¥–æ—Ä–æ–∂–µ–∫
-    const int LANE_HEIGHT = SCREEN_HEIGHT / 3;
-    for (int y = 0; y < SCREEN_HEIGHT; y++)
-    {
-        for (int x = 0; x < SCREEN_WIDTH; x++)
-        {
-            if (y < LANE_HEIGHT)
-            {
-                pScreenMem[y * SCREEN_WIDTH + x] = RGB(180, 180, 180);
-            }
-            else if (y < 2 * LANE_HEIGHT)
-            {
-                pScreenMem[y * SCREEN_WIDTH + x] = RGB(200, 200, 200);
-            }
-            else
-            {
-                pScreenMem[y * SCREEN_WIDTH + x] = RGB(180, 180, 180);
-            }
-        }
-    }
-
-    for (int x = 0; x < SCREEN_WIDTH; x++)
-    {
-        for (int dy = -2; dy <= 2; dy++)
-        {
-            int drawY = LANE_HEIGHT + dy;
-            if (drawY >= 0 && drawY < SCREEN_HEIGHT)
-            {
-                pScreenMem[drawY * SCREEN_WIDTH + x] = RGB(255, 255, 255);
-            }
-        }
-
-        for (int dy = -2; dy <= 2; dy++)
-        {
-            int drawY = 2 * LANE_HEIGHT + dy;
-            if (drawY >= 0 && drawY < SCREEN_HEIGHT)
-            {
-                pScreenMem[drawY * SCREEN_WIDTH + x] = RGB(255, 255, 255);
-            }
-        }
-    }
-
-    // –¢–∞–π–º–µ—Ä –≥–µ–Ω–µ—Ä–∞—Ü–∏–∏ –ø—Ä–µ–ø—è—Ç—Å—Ç–≤–∏–π
-    obstacleTimer++;
-    if (obstacleTimer >= OBSTACLE_SPAWN_RATE)
-    {
-        generateObstacle();
-        obstacleTimer = 0;
-    }
-
-    drawXyBitMap(car);
-
-    // –ü–µ—Ä–µ–º–µ—â–µ–Ω–∏–µ –∏ –æ—Ç—Ä–∏—Å–æ–≤–∫–∞ –≤—Å–µ—Ö –ø—Ä–µ–ø—è—Ç—Å—Ç–≤–∏–π
-    moveObstacles();
-
-    // –ü—Ä–æ–≤–µ—Ä–∫–∞ —Å—Ç–æ–ª–∫–Ω–æ–≤–µ–Ω–∏–π
-    for (auto obstacle : obstacles)
-    {
-        if (checkCollision(car, obstacle))
-        {
-            playCollisionSound();  // –í–æ—Å–ø—Ä–æ–∏–∑–≤–µ–¥–µ–Ω–∏–µ –∑–≤—É–∫–æ–≤—ã—Ö —ç—Ñ—Ñ–µ–∫—Ç–æ–≤ –ø—Ä–∏ —Å—Ç–æ–ª–∫–Ω–æ–≤–µ–Ω–∏–∏
-            stage = 4;
-            return;
-        }
-    }
-
-    // –û—Ç—Ä–∏—Å–æ–≤–∫–∞ —Å—á–µ—Ç–∞
-    char scoreText[20];
-    sprintf_s(scoreText, "Score: %d", score);
-    // drawText(scoreText, 10, 10, RGB(255, 255, 255));
-}
-
-void Game::exit()
-{
-    if (keyB->isKeyDown(VK_DOWN))
-    {
-        keyB->keyUp(VK_DOWN);
-        if (mItem < 2)
-        {
-            mItem++;
-            if (mItem == 1)
-                menuItemMap->y = 400;
-            else if (mItem == 2)
-                menuItemMap->y = 534;
-        }
-        return;
-    }
-    if (keyB->isKeyDown(VK_UP))
-    {
+// ÔÂÂ‰‚ËÊÂÌËÂ Ë„ÓÍ‡ 
+void Game::carMove() {
+    if (keyB->isKeyDown(VK_UP)) {
         keyB->keyUp(VK_UP);
-        if (mItem > 0)
-        {
-            mItem--;
-            if (mItem == 0)
-                menuItemMap->y = 270;
-            else if (mItem == 1)
-                menuItemMap->y = 400;
+        if (currentLane > 0) {
+            car.y = carY[--currentLane];
+            PlaySoundA(laneChangeSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
         }
-        return;
     }
-    if (keyB->isKeyDown(VK_RETURN))
-    {
-        if (mItem == 0)
-        {
-            stage = 1;
+    if (keyB->isKeyDown(VK_DOWN)) {
+        keyB->keyUp(VK_DOWN);
+        if (currentLane < 2) {
+            car.y = carY[++currentLane];
+            PlaySoundA(laneChangeSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
         }
-        else if (mItem == 1)
-        {
-            // –º–∞–≥–∞–∑–∏–Ω
-        }
-        else if (mItem == 2)
-        {
-            PostQuitMessage(0);
-        }
-        return;
     }
-    drawXyBitMap(escMap);
-    drawXyBitMap(menuItemMap);
 }
 
-// –ì–µ–Ω–µ—Ä–∞—Ü–∏—è –ø—Ä–µ–ø—è—Ç—Å—Ç–≤–∏—è
-void Game::generateObstacle()
-{
-    int lane = rand() % 3;
-    XyBitMap *obstacle = new XyBitMap;
+// ‚˚·Ó ËÁÓ·‡ÊÂÌËˇ Ï‡¯ËÌ˚
+void Game::carItemChange() {
+    if (keyB->isKeyDown(VK_DOWN)) {
+        keyB->keyUp(VK_DOWN);
+        if (cItem < 2) {
+            carSelector.y = carSelectorY[++cItem];
+        }
+        return;
+    }
+    if (keyB->isKeyDown(VK_UP)) {
+        keyB->keyUp(VK_UP);
+        if (cItem > 0) {
+            carSelector.y = carSelectorY[--cItem];
+        }
+        return;
+    }
+    if (keyB->isKeyDown(VK_RIGHT)) {
+        keyB->keyUp(VK_RIGHT);
+        carSelector.x = carSelectorX[1];
+        return;
+    }
+    if (keyB->isKeyDown(VK_LEFT)) {
+        keyB->keyUp(VK_LEFT);
+        carSelector.x = carSelectorX[0];
+        return;
+    } 
+}
+
+// „ÂÌÂ‡ˆËˇ ÔÂÔˇÚÒÚ‚ËÈ
+void Game::generateObstacle() {
+    BitMapXY* obstacle = new BitMapXY;
 
     obstacle->x = SCREEN_WIDTH;
-    obstacle->y = lane * LANE_HEIGHT + (LANE_HEIGHT - OBSTACLE_HEIGHT) / 2;
+    obstacle->y = carY[rand() % 3];
 
-    obstacle->setDimensions(OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
-    obstacle->allocateBuffer();
-    /*
-    // –ó–∞–ø–æ–ª–Ω–µ–Ω–∏–µ —Ü–≤–µ—Ç–∞ –ø—Ä–µ–ø—è—Ç—Å—Ç–≤–∏—è (–∫—Ä–∞—Å–Ω—ã–π)
-    DWORD *buffer = obstacle->getBuffer();
-    for (int i = 0; i < obstacle->getSize(); i++)
-    {
-        buffer[i] = 0xFFFF0000;
+    int tmp_generateObstacle = rand() % 2;
+    if (tmp_generateObstacle) {
+        obstacle->img = obstacleTwoMap;
     }
-    */
-    obstacle->loadBitMap("img\\heap.bmp");
+    else {
+        obstacle->img = obstacleMap;
+    }
+
     obstacles.push_back(obstacle);
 }
 
-void Game::gameover()
-{
-    char scoreText[50];
-    sprintf_s(scoreText, "Game over! Score: %d", score);
-    MessageBoxA(nullptr, scoreText, "Game over", MB_OK | MB_ICONINFORMATION);
-    PostQuitMessage(0);
+// ÔÂÂÏÂ˘ÂÌËÂ Ë ÓËÒÓ‚Í‡ ÔÂÔˇÚÒÚ‚ËÈ 
+void Game::moveObstacles() {
+    for (auto it = obstacles.begin(); it != obstacles.end();) {
+        BitMapXY* obstacle = *it;
+        obstacle->x -= 7;
+
+        if (obstacle->x + obstacleMap->getWidth() < 0) {
+            delete obstacle;
+            it = obstacles.erase(it);
+            score += 10;
+        }
+        else {
+            ++it;
+        }
+    }
 }
 
-// –§—É–Ω–∫—Ü–∏—è –æ—Ç—Ä–∏—Å–æ–≤–∫–∏ –±–∏—Ç–º–∞–ø–∞ –≤ –±—É—Ñ–µ—Ä —ç–∫—Ä–∞–Ω–∞
-void Game::drawXyBitMap(XyBitMap *bmp)
-{
+// œÓ‚ÂÍ‡ ÒÚÓÎÍÌÓ‚ÂÌËÈ
+bool Game::checkCollision(BitMapXY* obstacle) {
+    int carW = car.img->getWidth();
+    int carH = car.img->getHeight();
+    int obsW = obstacleMap->getWidth();
+    int obsH = obstacleMap->getHeight();
+
+    return car.x < obstacle->x + obsW &&
+        car.x + carW > obstacle->x &&
+        car.y < obstacle->y + obsH &&
+        car.y + carH > obstacle->y;
+}
+
+// ‘ÛÌÍˆËˇ ÓÚËÒÓ‚ÍË ·ËÚÏ‡Ô‡ ÒÓ‰ÂÊ‡˘Â„Ó ÍÓÓ‰ËÌ‡Ú˚ ‚ ·ÛÙÂ ˝Í‡Ì‡
+void Game::drawBitMap(XyBitMap* bmp) {
     int w = bmp->getWidth();
     int h = bmp->getHeight();
-    DWORD *img = bmp->getBuffer();
+    DWORD* img = bmp->getBuffer();
 
-    for (int y = 0; y < h; y++)
-    {
-        for (int x = 0; x < w; x++)
-        {
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
             int screenX = bmp->x + x;
             int screenY = bmp->y + y;
-            if (screenX >= 0 && screenX < SCREEN_WIDTH && screenY >= 0 && screenY < SCREEN_HEIGHT)
-            {
-                if ((BYTE)(((DWORD_PTR)(img[y * w + x]) >> 24)) & 0xff)
-                {
+            if (screenX >= 0 && screenX < SCREEN_WIDTH && screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                if ((BYTE)(((DWORD_PTR)(img[y * w + x]) >> 24)) & 0xff) {
                     pScreenMem[screenY * SCREEN_WIDTH + screenX] = img[y * w + x];
                 }
             }
@@ -373,106 +501,21 @@ void Game::drawXyBitMap(XyBitMap *bmp)
     }
 }
 
-// –ü–µ—Ä–µ–º–µ—â–µ–Ω–∏–µ –∏ –æ—Ç—Ä–∏—Å–æ–≤–∫–∞ –≤—Å–µ—Ö –ø—Ä–µ–ø—è—Ç—Å—Ç–≤–∏–π
-void Game::moveObstacles()
-{
-    for (auto it = obstacles.begin(); it != obstacles.end();)
-    {
-        XyBitMap *obstacle = *it;
-        obstacle->x -= 7; // –î–≤–∏–∂–µ–Ω–∏–µ –ø—Ä–µ–ø—è—Ç—Å—Ç–≤–∏—è –≤–ª–µ–≤–æ (—Å–∫–æ—Ä–æ—Å—Ç—å 5 –ø–∏–∫—Å–µ–ª–µ–π/–∫–∞–¥—Ä)
+// ‘ÛÌÍˆËˇ ÓÚËÒÓ‚ÍË ·ËÚÏ‡Ô‡ c Á‡‰‡ÌËÂÏ ÍÓÓ‰ËÌ‡Ú ‚ ·ÛÙÂ ˝Í‡Ì‡
+void Game::drawBitMap(BitMap* bmp, int bmpX, int bmpY) {
+    int w = bmp->getWidth();
+    int h = bmp->getHeight();
+    DWORD* img = bmp->getBuffer();
 
-        drawXyBitMap(obstacle);
-
-        if (obstacle->x + obstacle->getWidth() < 0)
-        {
-            delete obstacle;
-            it = obstacles.erase(it);
-            score += 10; // –£–≤–µ–ª–∏—á–µ–Ω–∏–µ —Å—á–µ—Ç–∞ (—É—Å–ø–µ—à–Ω–æ –æ–±–æ—à–ª–∏ –ø—Ä–µ–ø—è—Ç—Å—Ç–≤–∏–µ)
-        }
-        else
-        {
-            ++it;
-        }
-    }
-}
-
-// –§—É–Ω–∫—Ü–∏—è –ø—Ä–æ–≤–µ—Ä–∫–∏ —Å—Ç–æ–ª–∫–Ω–æ–≤–µ–Ω–∏–π (–ø—Ä—è–º–æ—É–≥–æ–ª—å–Ω—ã–µ –∫–æ–ª–ª–∏–∑–∏–∏)
-bool Game::checkCollision(XyBitMap *car, XyBitMap *obstacle)
-{
-    int carW = car->getWidth();
-    int carH = car->getHeight();
-    int obsW = obstacle->getWidth();
-    int obsH = obstacle->getHeight();
-
-    return car->x < obstacle->x + obsW &&
-           car->x + carW > obstacle->x &&
-           car->y < obstacle->y + obsH &&
-           car->y + carH > obstacle->y;
-}
-
-// –§—É–Ω–∫—Ü–∏—è –≤–æ—Å–ø—Ä–æ–∏–∑–≤–µ–¥–µ–Ω–∏—è –∑–≤—É–∫–æ–≤—ã—Ö —ç—Ñ—Ñ–µ–∫—Ç–æ–≤ —Å—Ç–æ–ª–∫–Ω–æ–≤–µ–Ω–∏—è
-void Game::playCollisionSound()
-{
-    PlaySoundA(collisionSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
-}
-
-void Game::handleCarSelectionInput() {
-    const auto& skins = CarSkin::getAllSkins();
-    if (keyB->isKeyDown(VK_UP)) {
-        keyB->keyUp(VK_UP);
-        if (carSelectIndex > 0) carSelectIndex--;
-    }
-    if (keyB->isKeyDown(VK_DOWN)) {
-        keyB->keyUp(VK_DOWN);
-        if (carSelectIndex < skins.size() - 1) carSelectIndex++;
-    }
-    if (keyB->isKeyDown(VK_RETURN)) {
-        keyB->keyUp(VK_RETURN);
-        std::string carPath = skins[carSelectIndex].getImagePath();
-        car->loadBitMap(carPath.c_str());
-        stage = 0;
-    }
-    if (keyB->isKeyDown(VK_ESCAPE)) {
-        keyB->keyUp(VK_ESCAPE);
-        stage = 0;
-    }
-}
-
-void Game::drawCarSelectionMenu() {
-    for (int i = 0; i < SCREEN_SIZE; i++) {
-        pScreenMem[i] = RGB(128, 128, 128);
-    }
-    
-    const auto& skins = CarSkin::getAllSkins();
-    for (size_t i = 0; i < skins.size(); i++) {
-        XyBitMap tempCar;
-        tempCar.loadBitMap(skins[i].getImagePath().c_str());
-        tempCar.x = SCREEN_WIDTH / 2 - tempCar.getWidth() / 2;
-        tempCar.y = 200 + i * 150;
-        drawXyBitMap(&tempCar);
-        
-        if (i == carSelectIndex) {
-            int x = tempCar.x - 5;
-            int y = tempCar.y - 5;
-            int w = tempCar.getWidth() + 10;
-            int h = tempCar.getHeight() + 10;
-            for (int px = x; px < x + w; px++) {
-                if (px >=0 && px < SCREEN_WIDTH) {
-                    pScreenMem[y * SCREEN_WIDTH + px] = RGB(255, 0, 0); //
-                    pScreenMem[(y + h) * SCREEN_WIDTH + px] = RGB(255, 0, 0); // 
-                }
-            }
-            for (int py = y; py < y + h; py++) {
-                if (py >=0 && py < SCREEN_HEIGHT) {
-                    pScreenMem[py * SCREEN_WIDTH + x] = RGB(255, 0, 0); // 
-                    pScreenMem[py * SCREEN_WIDTH + (x + w)] = RGB(255, 0, 0); // 
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            int screenX = bmpX + x;
+            int screenY = bmpY + y;
+            if (screenX >= 0 && screenX < SCREEN_WIDTH && screenY >= 0 && screenY < SCREEN_HEIGHT) {
+                if ((BYTE)(((DWORD_PTR)(img[y * w + x]) >> 24)) & 0xff) {
+                    pScreenMem[screenY * SCREEN_WIDTH + screenX] = img[y * w + x];
                 }
             }
         }
     }
-}
-
-void Game::playLaneChangeSound()
-{
-    PlaySoundA(laneChangeSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
 }
