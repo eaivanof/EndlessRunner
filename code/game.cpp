@@ -1,13 +1,14 @@
 #include "..\head\game.h"
 #include <ctime>
 
-Game::Game() {
+Game::Game()
+{
     srand(time(0));
-    // ñîçäà¸ì áóôåð ýêðàíà è îáðàáîò÷èê êëàâèàòóðû
+    // ÑÐ¾Ð·Ð´Ð°Ñ‘Ð¼ Ð±ÑƒÑ„ÐµÑ€ ÑÐºÑ€Ð°Ð½Ð° Ð¸ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº ÐºÐ»Ð°Ð²Ð¸Ð°Ñ‚ÑƒÑ€Ñ‹
     pScreenMem = new DWORD[SCREEN_SIZE];
     keyB = new KeyB();
 
-    // çàãðóçêà èçîáðàæåíèé
+    // Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ° Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ð¹
     menuMap = new XyBitMap();
     menuMap->loadBitMap("img\\menu.bmp");
     menuItemMap = new XyBitMap();
@@ -41,7 +42,7 @@ Game::Game() {
     keysMap = new XyBitMap;
     keysMap->loadBitMap("img\\keys.bmp");
 
-    // èíèöèàëèçàöèÿ ïîëåé
+    // Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¿Ð¾Ð»ÐµÐ¹
     menuItemMap->x = MenuItemX;
     menuItemMap->y = MenuItemY[0];
 
@@ -57,118 +58,149 @@ Game::Game() {
     laneChangeSoundPath = "sound\\lane_change.wav";
 }
 
-Game::~Game() {
-    if (pScreenMem) {
+Game::~Game()
+{
+    if (pScreenMem)
+    {
         delete[] pScreenMem;
         pScreenMem = nullptr;
     }
-    if (keyB) {
+    if (keyB)
+    {
         delete keyB;
         keyB = nullptr;
     }
-    if (menuMap) {
+    if (menuMap)
+    {
         delete menuMap;
         menuMap = nullptr;
     }
-    if (menuItemMap) {
+    if (menuItemMap)
+    {
         delete menuItemMap;
         menuItemMap = nullptr;
     }
-    if (escMap) {
+    if (escMap)
+    {
         delete escMap;
         escMap = nullptr;
     }
-    if (backMap) {
+    if (backMap)
+    {
         delete backMap;
         backMap = nullptr;
     }
-    if (pauseMap) {
+    if (pauseMap)
+    {
         delete pauseMap;
         pauseMap = nullptr;
     }
-    if (car1) {
+    if (car1)
+    {
         delete car1;
         car1 = nullptr;
     }
-    if (car2) {
+    if (car2)
+    {
         delete car2;
         car2 = nullptr;
     }
-    if (car3) {
+    if (car3)
+    {
         delete car3;
         car3 = nullptr;
     }
-    if (carItemMap) {
+    if (carItemMap)
+    {
         delete carItemMap;
         carItemMap = nullptr;
     }
-    if (redCarItemMap) {
+    if (redCarItemMap)
+    {
         delete redCarItemMap;
         redCarItemMap = nullptr;
     }
-    if (sCar1) {
+    if (sCar1)
+    {
         delete sCar1;
         sCar1 = nullptr;
     }
-    if (sCar2) {
+    if (sCar2)
+    {
         delete sCar2;
         sCar2 = nullptr;
     }
-    if (sCar3) {
+    if (sCar3)
+    {
         delete sCar3;
         sCar3 = nullptr;
     }
-    if (obstacleMap) {
+    if (obstacleMap)
+    {
         delete obstacleMap;
         obstacleMap = nullptr;
     }
-    if (obstacleTwoMap) {
+    if (obstacleTwoMap)
+    {
         delete obstacleTwoMap;
         obstacleTwoMap = nullptr;
     }
-    if (keysMap) {
+    if (keysMap)
+    {
         delete keysMap;
         keysMap = nullptr;
     }
 }
 
-void Game::loop() {
-    if (stage == Stages::menu) {
+void Game::loop()
+{
+    if (stage == Stages::menu)
+    {
         menu();
         return;
     }
-    if (stage == Stages::game) {
+    if (stage == Stages::game)
+    {
         go();
         return;
     }
-    if (stage == Stages::pause) {
+    if (stage == Stages::pause)
+    {
         drawBitMap(pauseMap);
-        if (keyB->isKeyDown(VK_SPACE)) {
+        if (keyB->isKeyDown(VK_SPACE))
+        {
             keyB->keyUp(VK_SPACE);
             stage = Stages::game;
         }
         return;
     }
-    if (stage == Stages::escmenu) {
+    if (stage == Stages::escmenu)
+    {
         exit();
         return;
     }
-    if (stage == Stages::gameover) {
+    if (stage == Stages::gameover)
+    {
         gameover();
         return;
     }
-    if (stage == Stages::store) {
+    if (stage == Stages::store)
+    {
         store();
         return;
     }
-    if (stage == Stages::keys) {
+    if (stage == Stages::keys)
+    {
         drawBitMap(keysMap);
-        if (keyB->isKeyDown(VK_ESCAPE)) {
+        if (keyB->isKeyDown(VK_ESCAPE))
+        {
             keyB->keyUp(VK_ESCAPE);
-            if (goGame) {
+            if (goGame)
+            {
                 stage = Stages::escmenu;
             }
-            else {
+            else
+            {
                 stage = Stages::menu;
             }
         }
@@ -176,62 +208,75 @@ void Game::loop() {
     }
 }
 
-void Game::menu() {
+void Game::menu()
+{
     drawBitMap(menuMap);
     drawBitMap(menuItemMap);
 
     menuItemChange();
 
-    if (keyB->isKeyDown(VK_RETURN)) {
+    if (keyB->isKeyDown(VK_RETURN))
+    {
         keyB->keyUp(VK_RETURN);
-        if (mItem == 0) {
+        if (mItem == 0)
+        {
             stage = Stages::game;
             carSelector.x = carSelectorX[0];
-            goGame = true; // âûõîä èç ìàãàçèíà â escmenu
+            goGame = true; // Ð²Ñ‹Ñ…Ð¾Ð´ Ð¸Ð· Ð¼Ð°Ð³Ð°Ð·Ð¸Ð½Ð° Ð² escmenu
         }
-        else if (mItem == 1) {
+        else if (mItem == 1)
+        {
             stage = Stages::store;
         }
-        else if (mItem == 2) {
+        else if (mItem == 2)
+        {
             stage = Stages::keys;
         }
-        else if (mItem == 3) {
+        else if (mItem == 3)
+        {
             PostQuitMessage(0);
         }
         return;
     }
 }
 
-void Game::go() {
-    if (keyB->isKeyDown(VK_SPACE)) {
+void Game::go()
+{
+    if (keyB->isKeyDown(VK_SPACE))
+    {
         keyB->keyUp(VK_SPACE);
         stage = Stages::pause;
         return;
     }
-    if (keyB->isKeyDown(VK_ESCAPE)) {
+    if (keyB->isKeyDown(VK_ESCAPE))
+    {
         stage = Stages::escmenu;
         return;
     }
 
-    // Ïåðåìåùåíèÿ îáúåêòîâ
+    // ÐŸÐµÑ€ÐµÐ¼ÐµÑ‰ÐµÐ½Ð¸Ñ Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð²
     carMove();
     obstacleTimer++;
-    if (obstacleTimer >= OBSTACLE_SPAWN_RATE) {
+    if (obstacleTimer >= OBSTACLE_SPAWN_RATE)
+    {
         generateObstacle();
         obstacleTimer = 0;
     }
     moveObstacles();
 
-    // Îòðèñîâêà
+    // ÐžÑ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ°
     drawBitMap(backMap);
     drawBitMap(car.img, car.x, car.y);
-    for (auto obstacle : obstacles) {
+    for (auto obstacle : obstacles)
+    {
         drawBitMap(obstacle->img, obstacle->x, obstacle->y);
     }
 
-    // Ïðîâåðêè ñòîëêíîâåíèé
-    for (auto obstacle : obstacles) {
-        if (checkCollision(obstacle)) {
+    // ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ¸ ÑÑ‚Ð¾Ð»ÐºÐ½Ð¾Ð²ÐµÐ½Ð¸Ð¹
+    for (auto obstacle : obstacles)
+    {
+        if (checkCollision(obstacle))
+        {
             PlaySoundA(collisionSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
             stage = Stages::gameover;
             return;
@@ -239,36 +284,44 @@ void Game::go() {
     }
 }
 
-void Game::exit() {
+void Game::exit()
+{
     drawBitMap(escMap);
     drawBitMap(menuItemMap);
 
     menuItemChange();
 
-    if (keyB->isKeyDown(VK_RETURN)) {
+    if (keyB->isKeyDown(VK_RETURN))
+    {
         keyB->keyUp(VK_RETURN);
-        if (mItem == 0) {
+        if (mItem == 0)
+        {
             stage = Stages::game;
         }
-        else if (mItem == 1) {
+        else if (mItem == 1)
+        {
             stage = Stages::store;
         }
-        else if (mItem == 2) {
+        else if (mItem == 2)
+        {
             stage = Stages::keys;
         }
-        else if (mItem == 3) {
+        else if (mItem == 3)
+        {
             PostQuitMessage(0);
         }
         return;
     }
 }
 
-void Game::gameover() {
+void Game::gameover()
+{
     char scoreText[50];
     sprintf_s(scoreText, "Game over! Score: %d", score);
     MessageBoxA(nullptr, scoreText, "Game over", MB_OK | MB_ICONINFORMATION);
     score = 0;
-    for (int i{}; i < 3;++i) {
+    for (int i{}; i < 3; ++i)
+    {
         items[i].isBuy = false;
     }
     obstacles.clear();
@@ -280,16 +333,20 @@ void Game::gameover() {
     carSelector.x = carSelectorX[1];
     carSelector.y = carSelectorY[0];
     stage = Stages::menu;
-    goGame = false; // âûõîä èç ìàãàçèíà â menu
+    goGame = false; // Ð²Ñ‹Ñ…Ð¾Ð´ Ð¸Ð· Ð¼Ð°Ð³Ð°Ð·Ð¸Ð½Ð° Ð² menu
 }
 
-void Game::store() {
-    if (keyB->isKeyDown(VK_ESCAPE)) {
+void Game::store()
+{
+    if (keyB->isKeyDown(VK_ESCAPE))
+    {
         keyB->keyUp(VK_ESCAPE);
-        if (goGame) {
+        if (goGame)
+        {
             stage = Stages::escmenu;
         }
-        else {
+        else
+        {
             stage = Stages::menu;
         }
         return;
@@ -307,60 +364,80 @@ void Game::store() {
     carItemChange();
     if ((carSelector.x == carSelectorX[1]) &&
         (!items[cItem].isBuy) &&
-        (items[cItem].price > score)) {
+        (items[cItem].price > score))
+    {
         carSelector.img = redCarItemMap;
     }
-    else {
+    else
+    {
         carSelector.img = carItemMap;
     }
 
-    if (keyB->isKeyDown(VK_RETURN)) {
+    if (keyB->isKeyDown(VK_RETURN))
+    {
         keyB->keyUp(VK_RETURN);
-        if (carSelector.x == carSelectorX[0]) {
-            if (cItem == 0) {
+        if (carSelector.x == carSelectorX[0])
+        {
+            if (cItem == 0)
+            {
                 car.img = car1;
             }
-            else if (cItem == 1) {
+            else if (cItem == 1)
+            {
                 car.img = car2;
             }
-            else if (cItem == 2) {
+            else if (cItem == 2)
+            {
                 car.img = car3;
             }
-            if (goGame) {
+            if (goGame)
+            {
                 stage = Stages::escmenu;
             }
-            else {
+            else
+            {
                 stage = Stages::menu;
             }
         }
-        else {
-            if (items[cItem].isBuy) {
-                if (cItem == 0) {
+        else
+        {
+            if (items[cItem].isBuy)
+            {
+                if (cItem == 0)
+                {
                     car.img = sCar1;
                 }
-                else if (cItem == 1) {
+                else if (cItem == 1)
+                {
                     car.img = sCar2;
                 }
-                else if (cItem == 2) {
+                else if (cItem == 2)
+                {
                     car.img = sCar3;
                 }
-                if (goGame) {
+                if (goGame)
+                {
                     stage = Stages::escmenu;
                 }
-                else {
+                else
+                {
                     stage = Stages::menu;
                 }
             }
-            else if (items[cItem].price <= score) {
-                if (cItem == 0) {
+            else if (items[cItem].price <= score)
+            {
+                if (cItem == 0)
+                {
                     score -= items[0].price;
                     items[0].isBuy = true;
                 }
-                else if (cItem == 1) {
+                else if (cItem == 1)
+                {
                     score -= items[1].price;
                     items[1].isBuy = true;
                 }
-                else if (cItem == 2) {
+                else if (cItem == 2)
+                {
                     score -= items[2].price;
                     items[2].isBuy = true;
                 }
@@ -370,130 +447,160 @@ void Game::store() {
     }
 }
 
-// âûáîð ïóíêòà ìåíþ
-void Game::menuItemChange() {
-    if (keyB->isKeyDown(VK_DOWN)) {
+// Ð²Ñ‹Ð±Ð¾Ñ€ Ð¿ÑƒÐ½ÐºÑ‚Ð° Ð¼ÐµÐ½ÑŽ
+void Game::menuItemChange()
+{
+    if (keyB->isKeyDown(VK_DOWN))
+    {
         keyB->keyUp(VK_DOWN);
-        if (mItem < 3) {
+        if (mItem < 3)
+        {
             menuItemMap->y = MenuItemY[++mItem];
         }
         return;
     }
-    if (keyB->isKeyDown(VK_UP)) {
+    if (keyB->isKeyDown(VK_UP))
+    {
         keyB->keyUp(VK_UP);
-        if (mItem > 0) {
+        if (mItem > 0)
+        {
             menuItemMap->y = MenuItemY[--mItem];
         }
         return;
     }
 }
 
-// ïåðåäâèæåíèå èãðîêà 
-void Game::carMove() {
-    if (keyB->isKeyDown(VK_UP)) {
+// Ð¿ÐµÑ€ÐµÐ´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ðµ Ð¸Ð³Ñ€Ð¾ÐºÐ°
+void Game::carMove()
+{
+    if (keyB->isKeyDown(VK_UP))
+    {
         keyB->keyUp(VK_UP);
-        if (currentLane > 0) {
+        if (currentLane > 0)
+        {
             car.y = carY[--currentLane];
             PlaySoundA(laneChangeSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
         }
     }
-    if (keyB->isKeyDown(VK_DOWN)) {
+    if (keyB->isKeyDown(VK_DOWN))
+    {
         keyB->keyUp(VK_DOWN);
-        if (currentLane < 2) {
+        if (currentLane < 2)
+        {
             car.y = carY[++currentLane];
             PlaySoundA(laneChangeSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
         }
     }
 }
 
-// âûáîð èçîáðàæåíèÿ ìàøèíû
-void Game::carItemChange() {
-    if (keyB->isKeyDown(VK_DOWN)) {
+// Ð²Ñ‹Ð±Ð¾Ñ€ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ Ð¼Ð°ÑˆÐ¸Ð½Ñ‹
+void Game::carItemChange()
+{
+    if (keyB->isKeyDown(VK_DOWN))
+    {
         keyB->keyUp(VK_DOWN);
-        if (cItem < 2) {
+        if (cItem < 2)
+        {
             carSelector.y = carSelectorY[++cItem];
         }
         return;
     }
-    if (keyB->isKeyDown(VK_UP)) {
+    if (keyB->isKeyDown(VK_UP))
+    {
         keyB->keyUp(VK_UP);
-        if (cItem > 0) {
+        if (cItem > 0)
+        {
             carSelector.y = carSelectorY[--cItem];
         }
         return;
     }
-    if (keyB->isKeyDown(VK_RIGHT)) {
+    if (keyB->isKeyDown(VK_RIGHT))
+    {
         keyB->keyUp(VK_RIGHT);
         carSelector.x = carSelectorX[1];
         return;
     }
-    if (keyB->isKeyDown(VK_LEFT)) {
+    if (keyB->isKeyDown(VK_LEFT))
+    {
         keyB->keyUp(VK_LEFT);
         carSelector.x = carSelectorX[0];
         return;
-    } 
+    }
 }
 
-// ãåíåðàöèÿ ïðåïÿòñòâèé
-void Game::generateObstacle() {
-    BitMapXY* obstacle = new BitMapXY;
+// Ð³ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ñ Ð¿Ñ€ÐµÐ¿ÑÑ‚ÑÑ‚Ð²Ð¸Ð¹
+void Game::generateObstacle()
+{
+    BitMapXY *obstacle = new BitMapXY;
 
     obstacle->x = SCREEN_WIDTH;
     obstacle->y = carY[rand() % 3];
 
     int tmp_generateObstacle = rand() % 2;
-    if (tmp_generateObstacle) {
+    if (tmp_generateObstacle)
+    {
         obstacle->img = obstacleTwoMap;
     }
-    else {
+    else
+    {
         obstacle->img = obstacleMap;
     }
 
     obstacles.push_back(obstacle);
 }
 
-// ïåðåìåùåíèå è îðèñîâêà ïðåïÿòñòâèé 
-void Game::moveObstacles() {
-    for (auto it = obstacles.begin(); it != obstacles.end();) {
-        BitMapXY* obstacle = *it;
+// Ð¿ÐµÑ€ÐµÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð¸ Ð¾Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¿Ñ€ÐµÐ¿ÑÑ‚ÑÑ‚Ð²Ð¸Ð¹
+void Game::moveObstacles()
+{
+    for (auto it = obstacles.begin(); it != obstacles.end();)
+    {
+        BitMapXY *obstacle = *it;
         obstacle->x -= 7;
 
-        if (obstacle->x + obstacleMap->getWidth() < 0) {
+        if (obstacle->x + obstacleMap->getWidth() < 0)
+        {
             delete obstacle;
             it = obstacles.erase(it);
             score += 10;
         }
-        else {
+        else
+        {
             ++it;
         }
     }
 }
 
-// Ïðîâåðêà ñòîëêíîâåíèé
-bool Game::checkCollision(BitMapXY* obstacle) {
+// ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° ÑÑ‚Ð¾Ð»ÐºÐ½Ð¾Ð²ÐµÐ½Ð¸Ð¹
+bool Game::checkCollision(BitMapXY *obstacle)
+{
     int carW = car.img->getWidth();
     int carH = car.img->getHeight();
     int obsW = obstacleMap->getWidth();
     int obsH = obstacleMap->getHeight();
 
     return car.x < obstacle->x + obsW &&
-        car.x + carW > obstacle->x &&
-        car.y < obstacle->y + obsH &&
-        car.y + carH > obstacle->y;
+           car.x + carW > obstacle->x &&
+           car.y < obstacle->y + obsH &&
+           car.y + carH > obstacle->y;
 }
 
-// Ôóíêöèÿ îòðèñîâêè áèòìàïà ñîäåðæàùåãî êîîðäèíàòû â áóôåð ýêðàíà
-void Game::drawBitMap(XyBitMap* bmp) {
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ¸ Ð±Ð¸Ñ‚Ð¼Ð°Ð¿Ð° ÑÐ¾Ð´ÐµÑ€Ð¶Ð°Ñ‰ÐµÐ³Ð¾ ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹ Ð² Ð±ÑƒÑ„ÐµÑ€ ÑÐºÑ€Ð°Ð½Ð°
+void Game::drawBitMap(XyBitMap *bmp)
+{
     int w = bmp->getWidth();
     int h = bmp->getHeight();
-    DWORD* img = bmp->getBuffer();
+    DWORD *img = bmp->getBuffer();
 
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
             int screenX = bmp->x + x;
             int screenY = bmp->y + y;
-            if (screenX >= 0 && screenX < SCREEN_WIDTH && screenY >= 0 && screenY < SCREEN_HEIGHT) {
-                if ((BYTE)(((DWORD_PTR)(img[y * w + x]) >> 24)) & 0xff) {
+            if (screenX >= 0 && screenX < SCREEN_WIDTH && screenY >= 0 && screenY < SCREEN_HEIGHT)
+            {
+                if ((BYTE)(((DWORD_PTR)(img[y * w + x]) >> 24)) & 0xff)
+                {
                     pScreenMem[screenY * SCREEN_WIDTH + screenX] = img[y * w + x];
                 }
             }
@@ -501,18 +608,23 @@ void Game::drawBitMap(XyBitMap* bmp) {
     }
 }
 
-// Ôóíêöèÿ îòðèñîâêè áèòìàïà c çàäàíèåì êîîðäèíàò â áóôåð ýêðàíà
-void Game::drawBitMap(BitMap* bmp, int bmpX, int bmpY) {
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ¸ Ð±Ð¸Ñ‚Ð¼Ð°Ð¿Ð° c Ð·Ð°Ð´Ð°Ð½Ð¸ÐµÐ¼ ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚ Ð² Ð±ÑƒÑ„ÐµÑ€ ÑÐºÑ€Ð°Ð½Ð°
+void Game::drawBitMap(BitMap *bmp, int bmpX, int bmpY)
+{
     int w = bmp->getWidth();
     int h = bmp->getHeight();
-    DWORD* img = bmp->getBuffer();
+    DWORD *img = bmp->getBuffer();
 
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
             int screenX = bmpX + x;
             int screenY = bmpY + y;
-            if (screenX >= 0 && screenX < SCREEN_WIDTH && screenY >= 0 && screenY < SCREEN_HEIGHT) {
-                if ((BYTE)(((DWORD_PTR)(img[y * w + x]) >> 24)) & 0xff) {
+            if (screenX >= 0 && screenX < SCREEN_WIDTH && screenY >= 0 && screenY < SCREEN_HEIGHT)
+            {
+                if ((BYTE)(((DWORD_PTR)(img[y * w + x]) >> 24)) & 0xff)
+                {
                     pScreenMem[screenY * SCREEN_WIDTH + screenX] = img[y * w + x];
                 }
             }
