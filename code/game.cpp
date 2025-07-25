@@ -3,11 +3,11 @@
 
 Game::Game() {
     srand(time(0));
-    // создаём буфер экрана и обработчик клавиатуры
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     pScreenMem = new DWORD[SCREEN_SIZE];
     keyB = new KeyB();
 
-    // загрузка изображений
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     menuMap = new XyBitMap();
     menuMap->loadBitMap("img\\menu.bmp");
     menuItemMap = new XyBitMap();
@@ -41,7 +41,7 @@ Game::Game() {
     keysMap = new XyBitMap;
     keysMap->loadBitMap("img\\keys.bmp");
 
-    // инициализация полей
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     menuItemMap->x = MenuItemX;
     menuItemMap->y = MenuItemY[0];
 
@@ -187,7 +187,7 @@ void Game::menu() {
         if (mItem == 0) {
             stage = Stages::game;
             carSelector.x = carSelectorX[0];
-            goGame = true; // выход из магазина в escmenu
+            goGame = true; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ escmenu
         }
         else if (mItem == 1) {
             stage = Stages::store;
@@ -213,7 +213,7 @@ void Game::go() {
         return;
     }
 
-    // Перемещения объектов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     carMove();
     obstacleTimer++;
     if (obstacleTimer >= OBSTACLE_SPAWN_RATE) {
@@ -222,14 +222,14 @@ void Game::go() {
     }
     moveObstacles();
 
-    // Отрисовка
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     drawBitMap(backMap);
     drawBitMap(car.img, car.x, car.y);
     for (auto obstacle : obstacles) {
         drawBitMap(obstacle->img, obstacle->x, obstacle->y);
     }
 
-    // Проверки столкновений
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     for (auto obstacle : obstacles) {
         if (checkCollision(obstacle)) {
             PlaySoundA(collisionSoundPath.c_str(), NULL, SND_FILENAME | SND_ASYNC);
@@ -280,7 +280,7 @@ void Game::gameover() {
     carSelector.x = carSelectorX[1];
     carSelector.y = carSelectorY[0];
     stage = Stages::menu;
-    goGame = false; // выход из магазина в menu
+    goGame = false; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ menu
 }
 
 void Game::store() {
@@ -370,7 +370,7 @@ void Game::store() {
     }
 }
 
-// выбор пункта меню
+// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 void Game::menuItemChange() {
     if (keyB->isKeyDown(VK_DOWN)) {
         keyB->keyUp(VK_DOWN);
@@ -388,7 +388,7 @@ void Game::menuItemChange() {
     }
 }
 
-// передвижение игрока 
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 
 void Game::carMove() {
     if (keyB->isKeyDown(VK_UP)) {
         keyB->keyUp(VK_UP);
@@ -406,7 +406,7 @@ void Game::carMove() {
     }
 }
 
-// выбор изображения машины
+// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 void Game::carItemChange() {
     if (keyB->isKeyDown(VK_DOWN)) {
         keyB->keyUp(VK_DOWN);
@@ -434,7 +434,7 @@ void Game::carItemChange() {
     } 
 }
 
-// генерация препятствий
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 void Game::generateObstacle() {
     BitMapXY* obstacle = new BitMapXY;
 
@@ -452,7 +452,7 @@ void Game::generateObstacle() {
     obstacles.push_back(obstacle);
 }
 
-// перемещение и орисовка препятствий 
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
 void Game::moveObstacles() {
     for (auto it = obstacles.begin(); it != obstacles.end();) {
         BitMapXY* obstacle = *it;
@@ -469,7 +469,7 @@ void Game::moveObstacles() {
     }
 }
 
-// Проверка столкновений
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 bool Game::checkCollision(BitMapXY* obstacle) {
     int carW = car.img->getWidth();
     int carH = car.img->getHeight();
@@ -482,7 +482,7 @@ bool Game::checkCollision(BitMapXY* obstacle) {
         car.y + carH > obstacle->y;
 }
 
-// Функция отрисовки битмапа содержащего координаты в буфер экрана
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 void Game::drawBitMap(XyBitMap* bmp) {
     int w = bmp->getWidth();
     int h = bmp->getHeight();
@@ -501,7 +501,7 @@ void Game::drawBitMap(XyBitMap* bmp) {
     }
 }
 
-// Функция отрисовки битмапа c заданием координат в буфер экрана
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ c пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 void Game::drawBitMap(BitMap* bmp, int bmpX, int bmpY) {
     int w = bmp->getWidth();
     int h = bmp->getHeight();

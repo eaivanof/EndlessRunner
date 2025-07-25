@@ -5,6 +5,7 @@
 #include <vector>
 #include <mmsystem.h>  
 #pragma comment(lib, "winmm.lib")
+#include <string>
 
 class Game {
 public:
@@ -32,7 +33,7 @@ public:
 
     Item items[3]{ {10, false},{50, false},{100, false} };
 private:
-    // функции состояний
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     void menu();
     void go();
     void exit();
@@ -48,7 +49,7 @@ private:
     int MenuItemY[4]{ 214, 333, 453, 573 };
     const int MenuItemX{ 425 };
 
-    // изображения
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     XyBitMap* menuMap{ nullptr };
     XyBitMap* menuItemMap{ nullptr };
     XyBitMap* escMap{ nullptr };
@@ -59,7 +60,7 @@ private:
     BitMap* obstacleMap{ nullptr };
     BitMap* obstacleTwoMap{ nullptr };
     XyBitMap* keysMap{ nullptr };
-    // изображения машины
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     BitMap* car1{ nullptr };
     BitMap* car2{ nullptr };
     BitMap* car3{ nullptr };
@@ -84,7 +85,7 @@ private:
     int carItemX[2]{ SCREEN_WIDTH / 2 - 500, SCREEN_WIDTH / 2 - 100 };
     int carSelectorX[2]{ carItemX[0] - 20, carItemX[1] - 20 };
     int carSelectorY[3]{ carY[0] - 20, carY[1] - 20, carY[2] - 20 };
-    bool goGame{ false }; // используется для выхода в меню из магазина
+    bool goGame{ false }; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     int obstacleTimer{};
     int OBSTACLE_SPAWN_RATE{65};
